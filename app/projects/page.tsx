@@ -1,6 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import CreateProjectDialog from "@/components/create-project-dialog"
 
 async function fetchProjects() {
   const res = await fetch("/api/projects")
@@ -22,7 +23,7 @@ export default function ProjectsPage() {
       <h1 className="text-2xl font-bold mb-6">
         Projects
       </h1>
-
+        <CreateProjectDialog />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
         {data?.map((project: any) => (
