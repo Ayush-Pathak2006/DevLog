@@ -24,3 +24,28 @@ export async function DELETE(
     )
   }
 }
+
+export async function PATCH(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params
+    const body = await req.json()
+
+    const { status } = body
+
+    const project = await prisma.project.update({
+      where: { id },
+      data: { status }
+    })
+
+    return NextResponse.json(project)
+
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to update project" },
+      { status: 500 }
+    )
+  }
+}

@@ -1,7 +1,16 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import CreateProjectDialog from "@/components/create-project-dialog"
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card"
+
+import { Button } from "@/components/ui/button"
 
 async function fetchProjects() {
   const res = await fetch("/api/projects")
@@ -10,9 +19,22 @@ async function fetchProjects() {
 
 export default function ProjectsPage() {
 
+  const queryClient = useQueryClient()
+
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: fetchProjects
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await fetch(`/api/projects/${id}`, {
+        method: "DELETE"
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] })
+    }
   })
 
   if (isLoading) return <p>Loading...</p>
@@ -20,30 +42,44 @@ export default function ProjectsPage() {
   return (
     <div>
 
-      <h1 className="text-2xl font-bold mb-6">
-        Projects
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Projects</h1>
+
         <CreateProjectDialog />
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
         {data?.map((project: any) => (
-          <div
-            key={project.id}
-            className="border rounded-lg p-4 bg-white shadow-sm"
-          >
-            <h2 className="font-semibold">
-              {project.name}
-            </h2>
 
-            <p className="text-sm text-gray-500">
-              {project.description}
-            </p>
+          <Card key={project.id} className="hover:shadow-md transition">
 
-            <span className="text-xs text-blue-600">
-              {project.status}
-            </span>
+            <CardHeader>
+              <CardTitle>{project.name}</CardTitle>
+            </CardHeader>
 
-          </div>
+            <CardContent className="flex flex-col gap-3">
+
+              <p className="text-sm text-gray-500">
+                {project.description}
+              </p>
+
+              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded w-fit">
+                {project.status}
+              </span>
+
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => deleteMutation.mutate(project.id)}
+              >
+                Delete
+              </Button>
+
+            </CardContent>
+
+          </Card>
+
         ))}
 
       </div>
