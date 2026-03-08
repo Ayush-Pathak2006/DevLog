@@ -1,23 +1,33 @@
-# DevLog
+<div align="center">
+  <img src="./public/devlog-logo.svg" alt="DevLog logo" width="120" />
+  <h1>DevLog</h1>
+  <p><strong>Track your projects, capture progress, and keep your dev resources organized.</strong></p>
+</div>
 
-DevLog is a lightweight project tracking app for developers. It helps you organize projects, write progress logs, save useful resources, and monitor activity from a dashboard in one place.
+<p align="center">
+  <img src="./public/devlog-features.svg" alt="DevLog feature overview illustration" width="100%" />
+</p>
+
+---
 
 ## What is this?
 
-This repository contains a full-stack Next.js application (App Router) with a Prisma + SQLite backend.
+**DevLog** is a full-stack Next.js app built for developers who want a focused place to manage ongoing work.
 
-With DevLog, you can:
-- Create and manage projects.
-- Add development log entries for each project.
-- Save links/resources by project.
-- View high-level stats and contribution-style activity on the dashboard.
+It combines:
+- **Project tracking** (status and descriptions)
+- **Development logs** (what you built and learned)
+- **Resource bookmarking** (useful links by project)
+- **Dashboard insights** (activity + totals)
+
+Whether you're building solo projects, client work, or learning in public, DevLog helps keep everything documented in one place.
 
 ## Tech Stack
 
-- **Framework:** Next.js 16 + React 19
+- **Framework:** Next.js 16 (App Router) + React 19
 - **Language:** TypeScript
-- **Database:** SQLite (via Prisma + better-sqlite3 adapter)
-- **Styling/UI:** Tailwind CSS + component primitives
+- **Database:** SQLite + Prisma + better-sqlite3 adapter
+- **Styling/UI:** Tailwind CSS + reusable UI components
 
 ## Clone and Run Locally
 
@@ -34,13 +44,19 @@ cd DevLog
 npm install
 ```
 
-### 3) Generate Prisma client (recommended)
+### 3) Generate Prisma client
 
 ```bash
 npx prisma generate
 ```
 
-### 4) Start the development server
+### 4) Run database migrations (if needed)
+
+```bash
+npx prisma migrate dev
+```
+
+### 5) Start the development server
 
 ```bash
 npm run dev
@@ -59,20 +75,17 @@ npm run lint   # Run ESLint
 
 ## Database Notes
 
-- Prisma is configured for SQLite.
-- The app points to `file:./dev.db`.
-- If you need to reset or re-apply schema changes:
+- Prisma uses **SQLite** in this project.
+- Local DB URL is configured as `file:./dev.db`.
+- Prisma schema is located at `prisma/schema.prisma`.
 
-```bash
-npx prisma migrate dev
-```
+## Project Structure (High-level)
 
-## Project Structure (high level)
-
-- `app/` – routes, pages, and API endpoints
-- `components/` – reusable UI and layout components
-- `lib/` – shared utilities and database client setup
-- `prisma/` – schema and migrations
+- `app/` — routes, pages, and API endpoints
+- `components/` — layout + reusable UI components
+- `lib/` — shared helpers and Prisma client setup
+- `prisma/` — schema and migrations
+- `public/` — static assets (including README visuals)
 
 ## Contributing
 
@@ -82,4 +95,5 @@ npx prisma migrate dev
 4. Open a pull request.
 
 ---
-If you want, I can also add a short **API endpoint reference** and a **screenshots** section to this README.
+
+Made for developers who like shipping _and_ documenting.
