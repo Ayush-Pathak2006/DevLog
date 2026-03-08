@@ -134,6 +134,7 @@ export default function DashboardPage() {
   }, [data])
 
   const mobileMonthLabels = useMemo(() => getSpacedMonthLabels(monthLabels, 8), [monthLabels])
+    const heatmapWidth = `calc(${weeks.length} * var(--week-width))`
 
   if (isLoading) return <p>Loading dashboard...</p>
 
@@ -164,22 +165,25 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <Card className="w-full max-w-full border-gray-200 bg-white text-gray-900 dark:border-[#30363d] dark:bg-[#0d1117] dark:text-[#c9d1d9]">
+      <Card className="w-full max-w-full">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold leading-6 text-gray-900 sm:text-base dark:text-[#e6edf3]">
+          <CardTitle className="text-sm font-semibold leading-6 sm:text-base">
             {totalActions} contributions in the last year
           </CardTitle>
         </CardHeader>
 
         <CardContent className="px-3 pb-4 sm:px-6">
           {weeks.length === 0 ? (
-            <p className="text-sm text-gray-500 dark:text-[#8b949e]">No activity yet.</p>
+            <p className="text-sm text-muted-foreground">No activity yet.</p>
           ) : (
             <div className="w-full max-w-full pb-1 [--cell-size:10px] [--cell-gap:3px] [--week-width:calc(var(--cell-size)+var(--cell-gap))] sm:[--cell-size:12px] sm:[--cell-gap:4px]">
-              <div className="rounded-md border border-gray-200 bg-white p-2 dark:border-[#30363d] dark:bg-[#0d1117] sm:p-3">
+              <div className="rounded-md border bg-card p-2 sm:p-3">
                 <div className="-mx-1 overflow-x-auto px-1 [touch-action:pan-x]">
-                  <div className="min-w-fit space-y-3">
-                    <div className="relative ml-6 h-4 text-[10px] text-gray-500 sm:ml-8 sm:text-xs dark:text-[#8b949e]">
+                  <div
+                    className="space-y-3"
+                    style={{ minWidth: `calc(${heatmapWidth} + 2.5rem)` }}
+                  >
+                    <div className="relative ml-6 h-4 text-[10px] text-muted-foreground sm:ml-8 sm:text-xs">
                       <div className="sm:hidden">
                         {mobileMonthLabels.map((month) => (
                           <span
@@ -205,7 +209,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="flex gap-1.5 sm:gap-2">
-                      <div className="grid grid-rows-7 gap-[var(--cell-gap)] pr-1 text-[10px] leading-none text-gray-500 sm:text-[11px] dark:text-[#8b949e]">
+                      <div className="grid grid-rows-7 gap-[var(--cell-gap)] pr-1 text-[10px] leading-none text-muted-foreground sm:text-[11px]">
                         <span className="h-[var(--cell-size)]" />
                         <span className="h-[var(--cell-size)]">Mon</span>
                         <span className="h-[var(--cell-size)]" />
@@ -215,7 +219,7 @@ export default function DashboardPage() {
                         <span className="h-[var(--cell-size)]" />
                       </div>
 
-                      <div className="flex gap-[var(--cell-gap)]">
+                      <div className="flex gap-[var(--cell-gap)]" style={{ width: heatmapWidth }}>
                         {weeks.map((week) => (
                           <div key={week[0]?.key} className="grid grid-rows-7 gap-[var(--cell-gap)]">
                             {week.map((day) => (
@@ -230,7 +234,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-end gap-2 text-[10px] text-gray-500 sm:text-xs dark:text-[#8b949e]">
+                    <div className="flex items-center justify-end gap-2 text-[10px] text-muted-foreground sm:text-xs">
                       <span>Less</span>
                       <div className="flex items-center gap-[var(--cell-gap)]">
                         {[0, 1, 2, 3, 4].map((level) => (
@@ -245,7 +249,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <p className="mt-2 text-[10px] text-gray-500 sm:hidden dark:text-[#8b949e]">Swipe to see more months →</p>
+                <p className="mt-2 text-[10px] text-muted-foreground sm:hidden">Swipe to see more months →</p>
               </div>
             </div>
           )}
