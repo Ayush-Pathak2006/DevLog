@@ -33,7 +33,21 @@ export async function PATCH(
     const { id } = await context.params
     const body = await req.json()
 
-    const { status } = body
+    const { status, name, description } = body
+
+    const data: { status?: string; name?: string; description?: string } = {}
+
+    if (typeof status === "string") {
+      data.status = status
+    }
+
+    if (typeof name === "string") {
+      data.name = name
+    }
+
+    if (typeof description === "string") {
+      data.description = description
+    }
 
     const project = await prisma.project.update({
       where: { id },

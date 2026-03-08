@@ -15,12 +15,23 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
+const defaultReadmeText = `## Overview
+Briefly describe what this project does.
+
+## Goals
+- Goal 1
+- Goal 2
+
+## Next Steps
+- [ ] Add first milestone`
+
 export default function CreateProjectDialog() {
 
   const queryClient = useQueryClient()
 
   const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
+  const [description, setDescription] = useState(defaultReadmeText)
+  const [open, setOpen] = useState(false)
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -43,18 +54,19 @@ export default function CreateProjectDialog() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] })
       setName("")
-      setDescription("")
+      setDescription(defaultReadmeText)
+      setOpen(false)
     }
   })
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
 
       <DialogTrigger>
         <Button>New Project</Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-w-xl p-4 sm:p-6">
 
         <DialogHeader>
           <DialogTitle>Create Project</DialogTitle>
@@ -72,6 +84,7 @@ export default function CreateProjectDialog() {
             placeholder="Project description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            className="min-h-52"
           />
 
           <Button
