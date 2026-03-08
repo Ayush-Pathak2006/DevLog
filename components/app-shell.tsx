@@ -20,7 +20,7 @@ export default function AppShell({ children }: AppShellProps) {
         </div>
       )}
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col bg-background">
         <Navbar
           isDesktopSidebarOpen={isDesktopSidebarOpen}
           onToggleDesktopSidebar={() => setIsDesktopSidebarOpen((prev) => !prev)}

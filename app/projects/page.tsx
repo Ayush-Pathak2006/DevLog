@@ -136,11 +136,11 @@ export default function ProjectsPage() {
           >
             <CardHeader>
               <CardTitle>{project.name}</CardTitle>
-              <p className="text-sm text-gray-500">{getPreviewText(project.description)}</p>
+              <p className="text-sm text-muted-foreground">{getPreviewText(project.description)}</p>
             </CardHeader>
 
             <CardContent className="flex flex-col gap-3">
-              <span className="w-fit rounded bg-blue-100 px-2 py-1 text-xs text-blue-700">
+               <span className="w-fit rounded bg-primary/10 px-2 py-1 text-xs text-primary">
                 {statusLabels[project.status]}
               </span>
 
@@ -190,7 +190,7 @@ export default function ProjectsPage() {
                   <label className="text-xs font-medium">Status</label>
                   <select
                     value={editStatus}
-                    className="h-8 w-full rounded border bg-white px-2 text-xs"
+                    className="h-8 w-full rounded border bg-background px-2 text-xs"
                     onChange={(e) => setEditStatus(e.target.value as ProjectStatus)}
                   >
                     {editableStatuses.map((status) => (

@@ -143,7 +143,7 @@ export default function LogsPage() {
           >
             <CardHeader>
               <CardTitle>{log.title}</CardTitle>
-              <p className="text-sm text-gray-500">{getPreviewText(log.content)}</p>
+               <p className="text-sm text-muted-foreground">{getPreviewText(log.content)}</p>
             </CardHeader>
 
             <CardContent className="flex items-center justify-end">

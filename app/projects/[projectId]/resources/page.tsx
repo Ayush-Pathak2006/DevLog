@@ -159,11 +159,11 @@ export default function ResourcesPage() {
           >
             <CardHeader>
               <CardTitle>{resource.title}</CardTitle>
-              <p className="text-sm text-gray-500">{getPreviewText(resource.url)}</p>
+              <p className="text-sm text-muted-foreground">{getPreviewText(resource.url)}</p>
             </CardHeader>
 
             <CardContent className="mt-auto flex items-center justify-between gap-2">
-              <span className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700">
+              <span className="rounded bg-primary/10 px-2 py-1 text-xs text-primary">
                 {resource.category || "General"}
               </span>
 
@@ -236,7 +236,7 @@ export default function ResourcesPage() {
                     href={editUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="block rounded border bg-muted/20 p-3 text-sm text-blue-600 underline"
+                    className="block rounded border bg-muted/20 p-3 text-sm text-primary underline"
                   >
                     {editUrl || "No URL provided"}
                   </a>

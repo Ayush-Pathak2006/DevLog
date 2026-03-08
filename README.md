@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevLog
 
-## Getting Started
+DevLog is a lightweight project tracking app for developers. It helps you organize projects, write progress logs, save useful resources, and monitor activity from a dashboard in one place.
 
-First, run the development server:
+## What is this?
+
+This repository contains a full-stack Next.js application (App Router) with a Prisma + SQLite backend.
+
+With DevLog, you can:
+- Create and manage projects.
+- Add development log entries for each project.
+- Save links/resources by project.
+- View high-level stats and contribution-style activity on the dashboard.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 + React 19
+- **Language:** TypeScript
+- **Database:** SQLite (via Prisma + better-sqlite3 adapter)
+- **Styling/UI:** Tailwind CSS + component primitives
+
+## Clone and Run Locally
+
+### 1) Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd DevLog
+```
+
+### 2) Install dependencies
+
+```bash
+npm install
+```
+
+### 3) Generate Prisma client (recommended)
+
+```bash
+npx prisma generate
+```
+
+### 4) Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev    # Start development server
+npm run build  # Build for production
+npm run start  # Start production server
+npm run lint   # Run ESLint
+```
 
-## Learn More
+## Database Notes
 
-To learn more about Next.js, take a look at the following resources:
+- Prisma is configured for SQLite.
+- The app points to `file:./dev.db`.
+- If you need to reset or re-apply schema changes:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npx prisma migrate dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure (high level)
 
-## Deploy on Vercel
+- `app/` – routes, pages, and API endpoints
+- `components/` – reusable UI and layout components
+- `lib/` – shared utilities and database client setup
+- `prisma/` – schema and migrations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Fork the repo.
+2. Create a feature branch.
+3. Commit your changes.
+4. Open a pull request.
+
+---
+If you want, I can also add a short **API endpoint reference** and a **screenshots** section to this README.
