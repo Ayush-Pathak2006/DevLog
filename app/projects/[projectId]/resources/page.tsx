@@ -154,7 +154,7 @@ export default function ResourcesPage() {
         {data?.map((resource) => (
           <Card
             key={resource.id}
-            className="flex h-52 cursor-pointer flex-col transition hover:shadow-md"
+            className="flex h-40 cursor-pointer flex-col transition hover:shadow-md"
             onClick={() => openResourceDetails(resource)}
           >
             <CardHeader>

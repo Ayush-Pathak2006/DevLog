@@ -138,7 +138,7 @@ export default function LogsPage() {
         {data?.map((log) => (
           <Card
             key={log.id}
-            className="flex h-52 cursor-pointer flex-col transition hover:shadow-md"
+            className="flex h-40 cursor-pointer flex-col transition hover:shadow-md"
             onClick={() => openLogDetails(log)}
           >
             <CardHeader>
