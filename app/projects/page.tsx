@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CreateProjectDialog from "@/components/create-project-dialog";
@@ -51,6 +51,8 @@ export default function ProjectsPage() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [editStatus, setEditStatus] = useState<ProjectStatus>("BUILDING");
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
@@ -69,29 +71,24 @@ export default function ProjectsPage() {
     },
   });
 
-  const statusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: ProjectStatus }) => {
-      await fetch(`/api/projects/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-    },
-  });
-
   const detailsMutation = useMutation({
-    mutationFn: async ({ id, name, description }: { id: string; name: string; description: string }) => {
+    mutationFn: async ({
+      id,
+      name,
+      description,
+      status,
+    }: {
+      id: string;
+      name: string;
+      description: string;
+      status: ProjectStatus;
+    }) => {
       const res = await fetch(`/api/projects/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, description }),
+        body: JSON.stringify({ name, description, status }),
       });
 
       return res.json() as Promise<Project>;
@@ -99,18 +96,25 @@ export default function ProjectsPage() {
     onSuccess: (updatedProject) => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       setSelectedProject(updatedProject);
+      setEditStatus(updatedProject.status);
+      setIsEditingDescription(false);
     },
   });
-
-  const selectedStatus = useMemo(() => {
-    if (!selectedProject) return "";
-    return statusLabels[selectedProject.status];
-  }, [selectedProject]);
 
   const openProjectDetails = (project: Project) => {
     setSelectedProject(project);
     setEditName(project.name);
     setEditDescription(project.description);
+    setEditStatus(project.status);
+    setIsEditingDescription(false);
+  };
+
+  const resetFields = () => {
+    if (!selectedProject) return;
+    setEditName(selectedProject.name);
+    setEditDescription(selectedProject.description);
+    setEditStatus(selectedProject.status);
+    setIsEditingDescription(false);
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -136,29 +140,9 @@ export default function ProjectsPage() {
             </CardHeader>
 
             <CardContent className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="w-fit rounded bg-blue-100 px-2 py-1 text-xs text-blue-700">
-                  {statusLabels[project.status]}
-                </span>
-
-                <select
-                  value={project.status}
-                  className="h-7 rounded border bg-white px-2 text-xs"
-                  onClick={(e) => e.stopPropagation()}
-                  onChange={(e) =>
-                    statusMutation.mutate({
-                      id: project.id,
-                      status: e.target.value as ProjectStatus,
-                    })
-                  }
-                >
-                  {editableStatuses.map((status) => (
-                    <option key={status} value={status}>
-                      {statusLabels[status]}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <span className="w-fit rounded bg-blue-100 px-2 py-1 text-xs text-blue-700">
+                {statusLabels[project.status]}
+              </span>
 
               <div className="flex flex-wrap gap-2">
                 <Link href={`/projects/${project.id}/logs`} onClick={(e) => e.stopPropagation()}>
@@ -189,39 +173,60 @@ export default function ProjectsPage() {
       </div>
 
       <Dialog open={Boolean(selectedProject)} onOpenChange={(open) => !open && setSelectedProject(null)}>
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-auto p-4 sm:p-6">
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-auto p-4 sm:max-w-3xl sm:p-6 lg:max-w-5xl">
           <DialogHeader>
             <DialogTitle>Project Details</DialogTitle>
           </DialogHeader>
 
           {selectedProject && (
             <div className="flex flex-col gap-4">
-              <div className="rounded border bg-muted/30 p-3 text-xs text-muted-foreground">
-                Current status: <span className="font-medium text-foreground">{selectedStatus}</span>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-xs font-medium">Project name</label>
+                  <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-medium">Status</label>
+                  <select
+                    value={editStatus}
+                    className="h-8 w-full rounded border bg-white px-2 text-xs"
+                    onChange={(e) => setEditStatus(e.target.value as ProjectStatus)}
+                  >
+                    {editableStatuses.map((status) => (
+                      <option key={status} value={status}>
+                        {statusLabels[status]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-medium">Project name</label>
-                <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
-              </div>
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-xs font-medium">Description / README</label>
+                  {!isEditingDescription && (
+                    <Button size="xs" variant="outline" onClick={() => setIsEditingDescription(true)}>
+                      Edit
+                    </Button>
+                  )}
+                </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-medium">Description / README</label>
-                <Textarea
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                  className="min-h-56"
-                />
+                {isEditingDescription ? (
+                  <Textarea
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    className="min-h-64"
+                  />
+                ) : (
+                  <div className="min-h-64 rounded border bg-muted/20 p-3 text-sm whitespace-pre-wrap">
+                    {editDescription || "No README description yet."}
+                  </div>
+                )}
               </div>
 
               <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setEditName(selectedProject.name);
-                    setEditDescription(selectedProject.description);
-                  }}
-                >
+                <Button variant="outline" onClick={resetFields}>
                   Reset
                 </Button>
 
@@ -231,6 +236,7 @@ export default function ProjectsPage() {
                       id: selectedProject.id,
                       name: editName,
                       description: editDescription,
+                      status: editStatus,
                     })
                   }
                 >
@@ -244,4 +250,3 @@ export default function ProjectsPage() {
     </div>
   );
 }
-
