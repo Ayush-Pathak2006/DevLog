@@ -96,4 +96,12 @@ npm run lint   # Run ESLint
 
 ---
 
+## Note on Deployment
+
+This project uses **SQLite** with **Prisma** for local development. SQLite relies on a file-based database (`dev.db`), which works well in local environments but is not fully compatible with serverless deployment platforms such as **Vercel**, where the filesystem is not persistent.
+
+Because of this limitation, database operations may not function correctly in the deployed environment. 
+
+---
+
 Made for developers who like shipping _and_ documenting.
